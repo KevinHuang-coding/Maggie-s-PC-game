@@ -1,163 +1,46 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>夢幻植物園：課金老農生活</title>
-    <style>
-        body {
-            font-family: 'Microsoft JhengHei', sans-serif;
-            /* 精美背景：舒適的自然綠色漸層 */
-            background: linear-gradient(135deg, #e3f2fd 0%, #e8f5e9 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-        .game-layout {
-            display: flex;
-            gap: 20px;
-            max-width: 1050px;
-            width: 100%;
-            position: relative;
-        }
-        .panel {
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
-            flex: 1;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.6);
-        }
-        .garden-panel { text-align: center; }
-        .stats-bar {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            background: #f1f8e9;
-            padding: 12px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            font-weight: bold;
-            font-size: 14px;
-            border: 1px solid #dcedc8;
-        }
-        .stats-row { display: flex; justify-content: space-between; }
-        
-        /* 精緻花盆與植物展示區 */
-        .pot-stage-container {
-            background: radial-gradient(circle, #ffffff 0%, #f5f5f5 100%);
-            border: 2px solid #e0e0e0;
-            border-radius: 20px;
-            padding: 20px;
-            margin: 15px 0;
-            box-shadow: inset 0 5px 10px rgba(0,0,0,0.02);
-        }
-        .plant-stage {
-            font-size: 95px;
-            height: 120px;
-            line-height: 120px;
-            transition: transform 0.2s;
-        }
-        .pot-display {
-            font-size: 55px;
-            margin-top: -25px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
-        }
+<!-- 
+========================================================================
+[遊戲名稱] 夢幻植物園 (Dream Botanical Garden)
+[版本編號] Version 1.0.0 (核心功能完整修復版)
+[更新日期] 2026-05-17
+[修改日誌]
+  - v1.0.0: 修復新手教學中斷問題，補齊核心播種、每秒水分流失(2%)與成長(4%)邏輯。
+  - v1.0.0: 實作鑽石抽（隨機率）與頂級抽（特別卡+金幣）轉蛋機制。
+  - v1.0.0: 綁定爆肝每日任務實時進度更新，並修正領獎與模擬隔天重置功能。
+========================================================================
+-->
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><title>夢幻植物園 v1.0.0</title><style>body{font-family:'Microsoft JhengHei',sans-serif;background:linear-gradient(135deg,#e3f2fd 0%,#e8f5e9 100%);display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;}.game-layout{display:flex;gap:20px;max-width:1050px;width:100%;position:relative;}.panel{background-color:rgba(255,255,255,0.95);padding:20px;border-radius:25px;box-shadow:0 15px 35px rgba(0,0,0,0.06);flex:1;backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,0.6);}.garden-panel{text-align:center;}.stats-bar{display:flex;flex-direction:column;gap:5px;background:#f1f8e9;padding:12px;border-radius:15px;margin-bottom:15px;font-weight:bold;font-size:14px;border:1px solid #dcedc8;}.stats-row{display:flex;justify-content:space-between;}.pot-stage-container{background:radial-gradient(circle,#ffffff 0%,#f5f5f5 100%);border:2px solid #e0e0e0;border-radius:20px;padding:20px;margin:15px 0;box-shadow:inset 0 5px 10px rgba(0,0,0,0.02);}.plant-stage{font-size:95px;height:120px;line-height:120px;transition:transform 0.2s;}.pot-display{font-size:55px;margin-top:-25px;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.15));}.water-container{background:#e0e0e0;border-radius:10px;height:15px;overflow:hidden;margin:10px 0;}.water-bar{background:linear-gradient(90deg,#4fc3f7,#0288d1);height:100%;width:100%;transition:width 0.1s linear;}.btn{border:none;padding:10px 15px;font-size:15px;border-radius:25px;cursor:pointer;font-weight:bold;transition:all 0.2s;width:100%;margin-bottom:8px;box-shadow:0 4px 6px rgba(0,0,0,0.05);}.btn:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,0.1);}.btn-water{background:#4caf50;color:white;}.btn-harvest{background:#ffeb3b;color:#2c3e50;}.btn-gacha-gold{background:#ff9800;color:white;}.btn-gacha-diamond{background:#9c27b0;color:white;}.btn-store{background:#607d8b;color:white;}.btn-cash{background:#f44336;color:white;}.btn:disabled{background:#bdc3c7;cursor:not-allowed;opacity:0.6;transform:none;box-shadow:none;}.section-title{margin-top:0;color:#2e7d32;border-bottom:2px solid #c8e6c9;padding-bottom:8px;font-size:18px;}.gacha-machine,.task-box{background:#fffde7;border:1px dashed #fdd835;padding:12px;border-radius:15px;margin-bottom:12px;}.task-box{background:#f1f8e9;border-color:#81c784;text-align:left;}.task-item{display:flex;justify-content:space-between;align-items:center;font-size:13px;background:white;padding:8px;border-radius:8px;margin-bottom:6px;border:1px solid #e8f5e9;}.rarity-tag{font-size:11px;padding:2px 6px;border-radius:4px;color:white;font-weight:bold;}.common{background:#9e9e9e;}.rare{background:#2196f3;}.legendary{background:#f44336;}.mythic{background:#9c27b0;}#tutorialOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);z-index:9999;display:flex;justify-content:center;align-items:center;}.tutorial-box{background:white;padding:25px;border-radius:20px;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.3);border:4px solid #4caf50;}.npc-avatar{font-size:60px;margin-bottom:10px;}</style></head><body>
 
-        .water-container {
-            background: #e0e0e0;
-            border-radius: 10px;
-            height: 15px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-        .water-bar {
-            background: linear-gradient(90deg, #4fc3f7, #0288d1);
-            height: 100%;
-            width: 100%;
-            transition: width 0.1s linear;
-        }
-        .btn {
-            border: none;
-            padding: 10px 15px;
-            font-size: 15px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
-            width: 100%;
-            margin-bottom: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
-        .btn:active { transform: translateY(0); }
-        .btn-water { background: #4caf50; color: white; }
-        .btn-harvest { background: #ffeb3b; color: #2c3e50; }
-        .btn-gacha-gold { background: #ff9800; color: white; }
-        .btn-gacha-diamond { background: #9c27b0; color: white; }
-        .btn-store { background: #607d8b; color: white; }
-        .btn-cash { background: #f44336; color: white; }
-        .btn:disabled { background: #bdc3c7; cursor: not-allowed; opacity: 0.6; transform: none; box-shadow: none; }
-        
-        .section-title { margin-top: 0; color: #2e7d32; border-bottom: 2px solid #c8e6c9; padding-bottom: 8px; font-size: 18px; }
-        .gacha-machine, .task-box { background: #fffde7; border: 1px dashed #fdd835; padding: 12px; border-radius: 15px; margin-bottom: 12px; }
-        .task-box { background: #f1f8e9; border-color: #81c784; text-align: left; }
-        .task-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; background: white; padding: 8px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e8f5e9; }
-        .rarity-tag { font-size: 11px; padding: 2px 6px; border-radius: 4px; color: white; font-weight: bold; }
-        .common { background: #9e9e9e; } .rare { background: #2196f3; } .legendary { background: #f44336; } .mythic { background: #9c27b0; }
-
-        /* 🌲 新手教學引導遮罩與對話框 */
-        #tutorialOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.65); z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .tutorial-box {
-            background: white; padding: 25px; border-radius: 20px; max-width: 400px; width: 90%;
-            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 4px solid #4caf50;
-        }
-        .npc-avatar { font-size: 60px; margin-bottom: 10px; }
-    </style>
-</head>
-<body>
-
-<!-- 🌲 新手引導系統系統 HTML -->
 <div id="tutorialOverlay">
     <div class="tutorial-box">
         <div class="npc-avatar">🧙‍♂️</div>
-        <h3 id="tutTitle" style="margin:5px 0; color:#2e7d32;">園藝大師的指導</h3>
-        <p id="tutText" style="color:#555; line-height:1.6; font-size:15px;">歡迎來到夢幻植物園！我是你的導師。首先，點擊下方按鈕開啟音樂，讓我們在輕鬆的氛圍下學習怎麼種植植物吧！</p>
-        <button class="btn btn-water" id="tutBtn" onclick="nextTutorialStep()">🎵 開啟音樂並開始教學</button>
+        <h3 id="tutTitle" style="margin:5px 0;color:#2e7d32;">園藝大師的指導</h3>
+        <p id="tutText" style="color:#555;line-height:1.6;font-size:15px;">歡迎來到夢幻植物園！我是你的導師。首先，讓我們來學習怎麼種植植物吧！</p>
+        <button class="btn btn-water" id="tutBtn" onclick="nextTutorialStep()">👉 開始教學</button>
     </div>
 </div>
 
 <div class="game-layout">
-    <!-- 左側：花園與種植區 -->
     <div class="panel garden-panel">
         <div class="stats-bar">
             <div class="stats-row">
-                <span style="color: #f57f17;">🪙 金幣: <span id="coinTxt">100</span></span>
-                <span style="color: #d32f2f;">💎 鑽石: <span id="diamondTxt">2</span></span>
+                <span style="color:#f57f17;">🪙 金幣: <span id="coinTxt">100</span></span>
+                <span style="color:#d32f2f;">💎 鑽石: <span id="diamondTxt">2</span></span>
             </div>
-            <div class="stats-row" style="border-top: 1px solid #e0e0e0; padding-top: 5px;">
-                <span style="color: #1976d2;">🎫 抽獎特別卡: <span id="cardTxt">1</span> 張</span>
+            <div class="stats-row" style="border-top:1px solid #e0e0e0;padding-top:5px;">
+                <span style="color:#1976d2;">🎫 抽獎特別卡: <span id="cardTxt">1</span> 張</span>
             </div>
         </div>
         
-        <h3 id="plantName" style="margin:5px 0; color:#333;">空盆栽</h3>
-        <div id="status" style="color: #7f8c8d; font-size: 13px;">請從下方背包選擇種子播種。</div>
+        <h3 id="plantName" style="margin:5px 0;color:#333;">空盆栽</h3>
+        <div id="status" style="color:#7f8c8d;font-size:13px;">請從下方背包選擇種子播種。</div>
         
-        <!-- 精緻化盆栽區域 -->
         <div class="pot-stage-container">
             <div id="plantDisplay" class="plant-stage">🏺</div>
-            <div id="potDisplay" class="pot-display">🪵</div> <!-- 底部木質精緻底座/花盆底 -->
+            <div id="potDisplay" class="pot-display">🪵</div>
         </div>
         
-        <div id="waterLabel" style="font-size: 12px; text-align: left; color: #7f8c8d; display:none;">水分狀態：</div>
+        <div id="waterLabel" style="font-size:12px;text-align:left;color:#7f8c8d;display:none;">水分狀態：</div>
         <div id="waterContainer" class="water-container" style="display:none;">
             <div id="waterBar" class="water-bar"></div>
         </div>
@@ -165,269 +48,302 @@
         <button id="waterBtn" class="btn btn-water" onclick="waterPlant()" style="display:none;">💦 澆水</button>
         <button id="harvestBtn" class="btn btn-harvest" onclick="harvestPlant()" style="display:none;">💰 收成賺金幣</button>
         
-        <div style="margin-top: 15px; text-align: left;">
-            <h4 style="margin: 5px 0; font-size:14px; color:#555;">🎒 你的種子背包：</h4>
-            <div id="invList" style="font-size: 13px; color: #34495e;">（空空如也）</div>
+        <div style="margin-top:15px;text-align:left;">
+            <h4 style="margin:5px 0;font-size:14px;color:#555;">🎒 你的種子背包：</h4>
+            <div id="invList" style="font-size:13px;color:#34495e; display: flex; flex-direction: column; gap: 4px;">（空空如也）</div>
         </div>
     </div>
 
-    <!-- 中間：每日任務區 -->
     <div class="panel">
         <h3 class="section-title">📅 爆肝每日任務</h3>
-        <p style="font-size:12px; color:#7f8c8d; margin-top:-5px;">需要做大量工作，才能換取微薄的 💎1 鑽石！</p>
-        
+        <p style="font-size:12px;color:#7f8c8d;margin-top:-5px;">需要做大量工作，才能換取微薄的 💎1 鑽石！</p>
         <div class="task-box">
             <div class="task-item">
                 <div><strong>辛苦澆水員</strong><br><span style="color:#7f8c8d;">累計澆水 15 次 (<span id="t1_prog">0</span>/15)</span></div>
-                <button id="t1_btn" class="btn btn-water" style="width:auto; margin:0; font-size:12px; padding:5px 10px;" onclick="claimTask(1)" disabled>領取 💎1</button>
+                <button id="t1_btn" class="btn btn-water" style="width:auto;margin:0;font-size:12px;padding:5px 10px;" onclick="claimTask(1)" disabled>領取 💎1</button>
             </div>
             <div class="task-item">
                 <div><strong>勤勞老農夫</strong><br><span style="color:#7f8c8d;">累計收成植物 3 次 (<span id="t2_prog">0</span>/3)</span></div>
-                <button id="t2_btn" class="btn btn-water" style="width:auto; margin:0; font-size:12px; padding:5px 10px;" onclick="claimTask(2)" disabled>領取 💎1</button>
+                <button id="t2_btn" class="btn btn-water" style="width:auto;margin:0;font-size:12px;padding:5px 10px;" onclick="claimTask(2)" disabled>領取 💎1</button>
             </div>
             <div class="task-item">
                 <div><strong>金幣大富豪</strong><br><span style="color:#7f8c8d;">賺取累計 600 金幣 (<span id="t3_prog">0</span>/600)</span></div>
-                <button id="t3_btn" class="btn btn-water" style="width:auto; margin:0; font-size:12px; padding:5px 10px;" onclick="claimTask(3)" disabled>領取 💎1</button>
+                <button id="t3_btn" class="btn btn-water" style="width:auto;margin:0;font-size:12px;padding:5px 10px;" onclick="claimTask(3)" disabled>領取 💎1</button>
             </div>
         </div>
         <button class="btn btn-store" style="background:#78909c;" onclick="resetDailyTasks()">🔄 重置每日任務 (模擬隔天)</button>
     </div>
 
-    <!-- 右側：轉蛋與課金商店 -->
     <div class="panel">
         <h3 class="section-title">🏪 皇家鑽石與抽獎</h3>
-        
-        <div class="gacha-machine" style="background:#fff3e0; border-color:#ffb74d;">
-            <h4 style="margin:5px 0; color:#e65100;">🛒 皇家儲值店</h4>
+        <div class="gacha-machine" style="background:#fff3e0;border-color:#ffb74d;">
+            <h4 style="margin:5px 0;color:#e65100;">🛒 皇家儲值店</h4>
             <button class="btn btn-cash" onclick="buyDiamondsWithCash(15)">💳 花費 NT$30 買 💎15 鑽石</button>
         </div>
-
-        <div class="gacha-machine" style="background:#f3e5f5; border-color:#ba68c8;">
-            <h4 style="margin:5px 0; color:#4a148c;">🌸 皇家鑽石特選</h4>
-            <div style="font-size:12px; display:flex; justify-content:space-between; align-items:center; background:white; padding:6px; border-radius:8px; margin-top:5px; border:1px solid #e1bee7;">
+        <div class="gacha-machine" style="background:#f3e5f5;border-color:#ba68c8;">
+            <h4 style="margin:5px 0;color:#4a148c;">🌸 皇家鑽石特選</h4>
+            <div style="font-size:12px;display:flex;justify-content:space-between;align-items:center;background:white;padding:6px;border-radius:8px;margin-top:5px;border:1px solid #e1bee7;">
                 <span><strong>宇宙星辰花</strong> <span class="rarity-tag mythic">神話</span></span>
-                <button class="btn btn-gacha-diamond" style="width:auto; margin:0; font-size:12px; padding:5px 8px;" onclick="buyMythicSeed()">💎 30 購買</button>
+                <button class="btn btn-gacha-diamond" style="width:auto;margin:0;font-size:12px;padding:5px 8px;" onclick="buyMythicSeed()">💎 30 購買</button>
             </div>
         </div>
-
-        <div class="gacha-machine" style="border-color:#64b5f6; background:#e3f2fd;">
-            <h4 style="margin:5px 0; color:#1565c0;">🎰 神祕轉蛋機</h4>
-            <button class="btn btn-gacha-diamond" style="background:#2196f3; margin-bottom:5px;" onclick="drawGacha('diamond')">💎 2 鑽石 隨機抽獎</button>
+        <div class="gacha-machine" style="border-color:#64b5f6;background:#e3f2fd;">
+            <h4 style="margin:5px 0;color:#1565c0;">🎰 神祕轉蛋機</h4>
+            <button class="btn btn-gacha-diamond" style="background:#2196f3;margin-bottom:5px;" onclick="drawGacha('diamond')">💎 2 鑽石 隨機抽獎</button>
             <button class="btn btn-gacha-gold" onclick="drawGacha('card_gold')">🎫卡牌 + 🪙500金幣 頂級抽</button>
         </div>
     </div>
 </div>
 
-<!-- 🎵 免費、免版權音樂與音效來源 -->
-<!-- 背景音樂：溫馨輕快的八音盒/水晶音樂 -->
-<audio id="bgMusic" loop src="https://mixkit.co"></audio>
-<!-- 澆水與收成特效聲 -->
-<audio id="soundWater" src="https://google.com"></audio>
-<audio id="soundHarvest" src="https://google.com"></audio>
-
 <script>
-    // 遊戲數據與狀態
-    let coins = 100; let diamonds = 2; let specialCards = 1; let inventory = { "雛菊": 1 };
-    let taskStats = { waterCount: 0, harvestCount: 0, totalCoinsEarned: 0 };
-    let taskClaimed = { 1: false, 2: false, 3: false };
-    let currentPlant = null; let water = 100; let age = 0; let isGrowing = false; let gameLoop = null;
+let coins = 100;
+let diamonds = 2;
+let specialCards = 1;
+let inventory = {"雛菊": 1};
 
-    const plantDatabase = {
-        "雛菊": { stages: ["🌱", "🌿", "🌼"], pot: "🪴", reward: 30, rarity: "普通" },
-        "向日葵": { stages: ["🌱", "🌿", "🌻"], pot: "🪴", reward: 50, rarity: "普通" },
-        "幸運草": { stages: ["🌱", "🌿", "🍀"], pot: "🏺", reward: 120, rarity: "稀有" },
-        "捕蠅草": { stages: ["🌱", "🌿", "🪴"], pot: "🏺", reward: 200, rarity: "稀有" },
-        "世界樹": { stages: ["🌿", "🌲", "🌳"], pot: "🧱", reward: 800, rarity: "傳說" },
-        "宇宙星辰花": { stages: ["✨", "🔮", "🌌"], pot: "🔮", reward: 2500, rarity: "神話" }
-    };
+let taskStats = {waterCount: 0, harvestCount: 0, totalCoinsEarned: 0};
+let taskClaimed = {1: false, 2: false, 3: false};
 
-    // 🌲 新手引導邏輯
-    let tutorialStep = 0;
-    function nextTutorialStep() {
-        tutorialStep++;
-        const title = document.getElementById('tutTitle');
-        const text = document.getElementById('tutText');
-        const btn = document.getElementById('tutBtn');
+let currentPlant = null;
+let water = 100;
+let growthProgress = 0; 
+let plantStageIndex = 0; 
 
-        if (tutorialStep === 1) {
-            // 嘗試播放背景音樂
-            document.getElementById('bgMusic').play().catch(()=>{});
-            title.innerText = "第一步：打開背包播種";
-            text.innerText = "在大自然音樂中，看左下角你的【背包】。那裡有一顆免費贈送的『雛菊種子』。等一下教學關閉後，請點擊它旁邊的【種植】按鈕把它種下去！";
-            btn.innerText = "下一步：學會細心照顧";
-        } else if (tutorialStep === 2) {
-            title.innerText = "第二步：及時澆水與收成";
-            text.innerText = "種下後，植物的水分條會不斷減少。水分歸零植物就會乾死！你要在歸零前點擊【💦澆水】補充。等植物完全長大，點擊【💰收成】就能賺到大筆金幣！";
-            btn.innerText = "最後：爆肝與抽卡";
-        } else if (tutorialStep === 3) {
-            title.innerText = "第三步：鑽石與神話植物";
-            text.innerText = "中間是每日任務，解完可以拿到極其稀有的鑽石，可以用來購買最頂級的『神話級宇宙星辰花』！嫌太慢的話，也能點擊右邊按鈕模擬『💳花錢儲值』。祝你種植愉快！";
-            btn.innerText = "開始遊戲！";
-        } else if (tutorialStep === 4) {
-            document.getElementById('tutorialOverlay').style.display = 'none';
+const plantDatabase = {
+    "雛菊": {stages: ["🌱","🌿","🌼"], pot: "🪴", reward: 30, rarity: "common", rarityTxt: "普通"},
+    "向日葵": {stages: ["🌱","🌿","🌻"], pot: "🪴", reward: 50, rarity: "common", rarityTxt: "普通"},
+    "幸運草": {stages: ["🌱","🌿","🍀"], pot: "🏺", reward: 120, rarity: "rare", rarityTxt: "稀有"},
+    "捕蠅草": {stages: ["🌱","🌿","🪴"], pot: "🏺", reward: 200, rarity: "rare", rarityTxt: "稀有"},
+    "世界樹": {stages: ["🌿","🌲","🌳"], pot: "🧱", reward: 800, rarity: "legendary", rarityTxt: "傳說"},
+    "宇宙星辰花": {stages: ["✨","🔮","🌌"], pot: "🔮", reward: 2500, rarity: "mythic", rarityTxt: "神話"}
+};
+
+let tutorialStep = 0;
+
+function updateUI() {
+    document.getElementById("coinTxt").innerText = coins;
+    document.getElementById("diamondTxt").innerText = diamonds;
+    document.getElementById("cardTxt").innerText = specialCards;
+
+    const invDiv = document.getElementById("invList");
+    invDiv.innerHTML = "";
+    let hasSeed = false;
+    for (let name in inventory) {
+        if (inventory[name] > 0) {
+            hasSeed = true;
+            const item = plantDatabase[name];
+            const btn = document.createElement("button");
+            btn.className = "btn";
+            btn.style.margin = "2px 0";
+            btn.style.fontSize = "12px";
+            btn.style.textAlign = "left";
+            btn.innerHTML = `🌱 播種 <strong>${name}</strong> [${item.rarityTxt}] (擁有 x${inventory[name]})`;
+            btn.onclick = () => plantSeed(name);
+            if (currentPlant !== null) btn.disabled = true;
+            invDiv.appendChild(btn);
         }
     }
+    if (!hasSeed) invDiv.innerText = "（空空如也，快去轉蛋機抽種子吧！）";
 
-    // 介面更新與音效播放
-    function playSound(id) {
-        const sound = document.getElementById(id);
-        sound.currentTime = 0;
-        sound.play().catch(()=>{});
+    document.getElementById("t1_prog").innerText = taskStats.waterCount;
+    document.getElementById("t2_prog").innerText = taskStats.harvestCount;
+    document.getElementById("t3_prog").innerText = taskStats.totalCoinsEarned;
+
+    document.getElementById("t1_btn").disabled = taskClaimed[1] || taskStats.waterCount < 15;
+    document.getElementById("t1_btn").innerText = taskClaimed[1] ? "已領取" : "領取 💎1";
+    
+    document.getElementById("t2_btn").disabled = taskClaimed[2] || taskStats.harvestCount < 3;
+    document.getElementById("t2_btn").innerText = taskClaimed[2] ? "已領取" : "領取 💎1";
+
+    document.getElementById("t3_btn").disabled = taskClaimed[3] || taskStats.totalCoinsEarned < 600;
+    document.getElementById("t3_btn").innerText = taskClaimed[3] ? "已領取" : "領取 💎1";
+}
+
+function nextTutorialStep() {
+    tutorialStep++;
+    const title = document.getElementById("tutTitle");
+    const text = document.getElementById("tutText");
+    const btn = document.getElementById("tutBtn");
+
+    if (tutorialStep === 1) {
+        title.innerText = "第一步：播種種子";
+        text.innerText = "點擊左下方背包裡的「雛菊」種子，把它種進盆栽裡。";
+        btn.innerText = "好的，我知道了";
+    } else if (tutorialStep === 2) {
+        title.innerText = "第二步：照顧與收成";
+        text.innerText = "植物需要水分才能成長。當水分條降低時，記得點擊「💦 澆水」。等到它完全成熟後，點擊「💰 收成賺金幣」就能換取豐厚獎勵！";
+        btn.innerText = "開始體驗遊戲！";
+    } else {
+        document.getElementById("tutorialOverlay").style.display = "none";
+        startGameLoop();
     }
+}
 
-    function updateUI() {
-        document.getElementById('coinTxt').innerText = coins;
-        document.getElementById('diamondTxt').innerText = diamonds;
-        document.getElementById('cardTxt').innerText = specialCards;
-        
-        const invList = document.getElementById('invList');
-        invList.innerHTML = "";
-        let hasSeed = false;
-        for (let seed in inventory) {
-            if (inventory[seed] > 0) {
-                hasSeed = true;
-                let rClass = plantDatabase[seed].rarity === "普通"?"common":plantDatabase[seed].rarity === "稀有"?"rare":plantDatabase[seed].rarity === "傳說"?"legendary":"mythic";
-                invList.innerHTML += `
-                    <div style="margin: 4px 0; display:flex; justify-content:space-between; align-items:center; background:#fcfcfc; padding:6px; border-radius:8px; border:1px solid #eee;">
-                        <span style="font-size:12px;"><strong>${seed}</strong> <span class="rarity-tag ${rClass}">${plantDatabase[seed].rarity}</span> x${inventory[seed]}</span>
-                        <button onclick="startPlanting('${seed}')" style="cursor:pointer; padding:3px 10px; border-radius:5px; border:none; background:#4caf50; color:white; font-size:12px; font-weight:bold;">種植</button>
-                    </div>`;
-            }
-        }
-        if (!hasSeed) invList.innerHTML = "背包空空，快去解任務或儲值鑽石！";
+function plantSeed(name) {
+    if (currentPlant !== null) return;
+    if (!inventory[name] || inventory[name] <= 0) return;
 
-        document.getElementById('t1_prog').innerText = taskStats.waterCount;
-        document.getElementById('t2_prog').innerText = taskStats.harvestCount;
-        document.getElementById('t3_prog').innerText = taskStats.totalCoinsEarned;
+    inventory[name]--;
+    currentPlant = name;
+    water = 100;
+    growthProgress = 0;
+    plantStageIndex = 0;
 
-        document.getElementById('t1_btn').disabled = (taskStats.waterCount < 15 || taskClaimed[1]);
-        document.getElementById('t2_btn').disabled = (taskStats.harvestCount < 3 || taskClaimed[2]);
-        document.getElementById('t3_btn').disabled = (taskStats.totalCoinsEarned < 600 || taskClaimed[3]);
-        
-        if(taskClaimed[1]) document.getElementById('t1_btn').innerText = "已領取";
-        if(taskClaimed[2]) document.getElementById('t2_btn').innerText = "已領取";
-        if(taskClaimed[3]) document.getElementById('t3_btn').innerText = "已領取";
-    }
+    const item = plantDatabase[name];
+    document.getElementById("plantName").innerText = name + ` (${item.rarityTxt})`;
+    document.getElementById("status").innerText = "植物正在努力生長中，別忘了保持水分！";
+    document.getElementById("plantDisplay").innerText = item.stages[0];
+    document.getElementById("potDisplay").innerText = item.pot;
 
-    function buyDiamondsWithCash(amount) {
-        if(confirm(`確定要花費真實貨幣購買 💎${amount} 鑽石嗎？`)) {
-            diamonds += amount; alert(`💰 儲值成功！💎${amount} 鑽石已到帳！`); updateUI();
-        }
-    }
+    document.getElementById("waterLabel").style.display = "block";
+    document.getElementById("waterContainer").style.display = "block";
+    document.getElementById("waterBar").style.width = "100%";
+    document.getElementById("waterBtn").style.display = "block";
+    
+    updateUI();
+}
 
-    function buyMythicSeed() {
-        if (diamonds >= 30) {
-            diamonds -= 30; inventory["宇宙星辰花"] = (inventory["宇宙星辰花"] || 0) + 1;
-            alert("🎉 成功花費 💎30 鑽石直接購買了最高級的【宇宙星辰花】種子！"); updateUI();
-        } else {
-            alert(`❌ 鑽石不足！還差 ${30 - diamonds} 顆。\n請去解每日任務拿到鑽石，或者點擊上方按鈕直接用錢儲值！`);
-        }
-    }
+function waterPlant() {
+    if (currentPlant === null) return;
+    water = Math.min(100, water + 25);
+    document.getElementById("waterBar").style.width = water + "%";
+    
+    taskStats.waterCount++;
+    updateUI();
+}
 
-    function claimTask(id) {
-        if (taskClaimed[id]) return;
-        taskClaimed[id] = true; diamonds += 1;
-        alert("✨ 獲得了辛苦爆肝的結晶： 💎 1 鑽石！"); updateUI();
-    }
+function harvestPlant() {
+    if (currentPlant === null || plantStageIndex < 2) return;
 
-    function resetDailyTasks() {
-        taskStats.waterCount = 0; taskStats.harvestCount = 0; taskStats.totalCoinsEarned = 0;
-        taskClaimed = { 1: false, 2: false, 3: false };
-        document.getElementById('t1_btn').innerText = "領取 💎1"; document.getElementById('t2_btn').innerText = "領取 💎1"; document.getElementById('t3_btn').innerText = "領取 💎1";
-        alert("📆 任務已重置，繼續你的爆肝生活吧！"); updateUI();
-    }
+    const item = plantDatabase[currentPlant];
+    coins += item.reward;
+    taskStats.totalCoinsEarned += item.reward;
+    taskStats.harvestCount++;
 
-    function drawGacha(type) {
-        let rolled = "";
-        if (type === 'diamond') {
-            if (diamonds < 2) { alert("鑽石不足！需要 💎2 鑽石。"); return; }
-            diamonds -= 2;
-            let rand = Math.random() * 100;
-            if (rand < 50) rolled = Math.random() > 0.5 ? "雛菊" : "向日葵";
-            else if (rand < 85) rolled = Math.random() > 0.5 ? "幸運草" : "捕蠅草";
-            else if (rand < 98) rolled = "世界樹";
-            else rolled = "宇宙星辰花";
-        } else if (type === 'card_gold') {
-            if (specialCards < 1 || coins < 500) { alert("卡牌不足或金幣沒有 500 🪙！"); return; }
-            specialCards--; coins -= 500;
-            rolled = Math.random() < 0.75 ? "世界樹" : "宇宙星辰花";
-        }
-        inventory[rolled] = (inventory[rolled] || 0) + 1;
-        alert(`🎰 轉蛋結果：獲得【${plantDatabase[rolled].rarity}】${rolled}種子 x1！`);
-        updateUI();
-    }
+    alert(`🎉 成功收成【${currentPlant}】！獲得了 🪙${item.reward} 金幣！`);
 
-    function startPlanting(name) {
-        if (isGrowing) { alert("盆栽滿了！"); return; }
-        inventory[name]--; currentPlant = name; water = 100; age = 0; isGrowing = true;
-        document.getElementById('plantName').innerText = `目前種植：${name}`;
-        document.getElementById('status').innerText = "生長中...";
-        document.getElementById('plantDisplay').innerText = plantDatabase[name].stages[0];
-        document.getElementById('potDisplay').innerText = plantDatabase[name].pot; // 切換精緻花盆外觀
-        document.getElementById('waterLabel').style.display = "block";
-        document.getElementById('waterContainer').style.display = "block";
-        document.getElementById('waterBtn').style.display = "block";
-        document.getElementById('harvestBtn').style.display = "none";
-        updateUI();
-
-        if (gameLoop) clearInterval(gameLoop);
-        gameLoop = setInterval(() => {
-            let drain = name === "宇宙星辰花" ? 1.5 : (name === "世界樹" ? 0.8 : 0.4);
-            water -= drain;
-            if (water <= 0) {
-                clearInterval(gameLoop); isGrowing = false;
-                document.getElementById('status').innerText = "植物太渴枯萎了... 🍂";
-                document.getElementById('plantDisplay').innerText = "🍂";
-                document.getElementById('waterBtn').style.display = "none";
-                return;
-            }
-            document.getElementById('waterBar').style.width = water + '%';
-            age++;
-            let stages = plantDatabase[currentPlant].stages;
-            if (age < 50) document.getElementById('plantDisplay').innerText = stages[0];
-            else if (age < 120) document.getElementById('plantDisplay').innerText = stages[1];
-            else {
-                clearInterval(gameLoop);
-                document.getElementById('plantDisplay').innerText = stages[2];
-                document.getElementById('status').innerText = "✨ 已成熟！可收成！";
-                document.getElementById('waterBtn').style.display = "none";
-                document.getElementById('harvestBtn').style.display = "block";
-            }
-        }, 100);
-    }
-
-    function waterPlant() {
-        if (!isGrowing) return;
-        water = Math.min(100, water + 20);
-        document.getElementById('waterBar').style.width = water + '%';
-        playSound('soundWater'); // 播放澆水音效
-        taskStats.waterCount++;
-        updateUI();
-    }
-
-    function harvestPlant() {
-        if (!currentPlant) return;
-        const reward = plantDatabase[currentPlant].reward;
-        coins += reward;
-        taskStats.harvestCount++;
-        taskStats.totalCoinsEarned += reward;
-        playSound('soundHarvest'); // 播放收成音效
-
-        alert(`收成成功！獲得了 🪙 ${reward} 金幣！`);
-        
-        isGrowing = false; currentPlant = null;
-        document.getElementById('plantDisplay').innerText = "🏺";
-        document.getElementById('potDisplay').innerText = "🪵";
-        document.getElementById('plantName').innerText = "空盆栽";
-        document.getElementById('status').innerText = "請播種。";
-        document.getElementById('waterLabel').style.display = "none";
-        document.getElementById('waterContainer').style.display = "none";
-        document.getElementById('harvestBtn').style.display = "none";
-        updateUI();
-    }
+    currentPlant = null;
+    document.getElementById("plantName").innerText = "空盆栽";
+    document.getElementById("status").innerText = "請從下方背包選擇種子播種。";
+    document.getElementById("plantDisplay").innerText = "🏺";
+    document.getElementById("potDisplay").innerText = "🪵";
+    
+    document.getElementById("waterLabel").style.display = "none";
+    document.getElementById("waterContainer").style.display = "none";
+    document.getElementById("waterBtn").style.display = "none";
+    document.getElementById("harvestBtn").style.display = "none";
 
     updateUI();
-</script>
+}
 
-</body>
-</html>
+function claimTask(taskId) {
+    if (taskClaimed[taskId]) return;
+    taskClaimed[taskId] = true;
+    diamonds += 1;
+    alert("🎁 成功領取任務獎勵：💎 1 鑽石！");
+    updateUI();
+}
+
+function resetDailyTasks() {
+    taskStats.waterCount = 0;
+    taskStats.harvestCount = 0;
+    taskStats.totalCoinsEarned = 0;
+    taskClaimed[1] = false;
+    taskClaimed[2] = false;
+    taskClaimed[3] = false;
+    alert("📅 隔天了！每日任務進度已重置。");
+    updateUI();
+}
+
+function buyDiamondsWithCash(amount) {
+    diamonds += amount;
+    alert(`💳 感謝課金！成功儲值獲得 💎${amount} 鑽石！`);
+    updateUI();
+}
+
+function buyMythicSeed() {
+    if (diamonds < 30) {
+        alert("❌ 您的鑽石不足！神話級種子需要 💎30。");
+        return;
+    }
+    diamonds -= 30;
+    inventory["宇宙星辰花"] = (inventory["宇宙星辰花"] || 0) + 1;
+    alert("🌸 皇家特選！成功購買【宇宙星辰花】種子 1 顆！");
+    updateUI();
+}
+
+function drawGacha(type) {
+    if (type === 'diamond') {
+        if (diamonds < 2) {
+            alert("❌ 鑽石不足，無法抽獎！");
+            return;
+        }
+        diamonds -= 2;
+    } else if (type === 'card_gold') {
+        if (specialCards < 1 || coins < 500) {
+            alert("❌ 頂級抽需要 🎫1張特別卡 + 🪙500金幣！");
+            return;
+        }
+        specialCards -= 1;
+        coins -= 500;
+    }
+
+    const rand = Math.random() * 100;
+    let prize = "雛菊";
+    
+    if (type === 'diamond') {
+        if (rand < 5) prize = "世界樹";
+        else if (rand < 15) prize = "捕蠅草";
+        else if (rand < 30) prize = "幸運草";
+        else if (rand < 65) prize = "向日葵";
+        else prize = "雛菊";
+    } else {
+        if (rand < 10) prize = "宇宙星辰花";
+        else if (rand < 60) prize = "世界樹";
+        else if (rand < 80) prize = "捕蠅草";
+        else prize = "幸運草";
+    }
+
+    inventory[prize] = (inventory[prize] || 0) + 1;
+    const item = plantDatabase[prize];
+    alert(`🎰 轉蛋機啟動！\n恭喜抽中：【${prize}】種子 (稀有度: ${item.rarityTxt})！`);
+    updateUI();
+}
+
+function startGameLoop() {
+    if (gameLoop) clearInterval(gameLoop);
+    
+    gameLoop = setInterval(() => {
+        if (currentPlant === null) return;
+
+        if (water > 0) {
+            water -= 2; 
+            if (water < 0) water = 0;
+            document.getElementById("waterBar").style.width = water + "%";
+        }
+
+        if (water > 0 && plantStageIndex < 2) {
+            growthProgress += 4; 
+            
+            const item = plantDatabase[currentPlant];
+            
+            if (growthProgress >= 40 && growthProgress < 100 && plantStageIndex === 0) {
+                plantStageIndex = 1;
+                document.getElementById("plantDisplay").innerText = item.stages[1];
+                document.getElementById("status").innerText = "植物正在茁壯生長！";
+            }
+            if (growthProgress >= 100) {
+                plantStageIndex = 2;
+                document.getElementById("plantDisplay").innerText = item.stages[2];
+                document.getElementById("status").innerText = "✨ 植物已經完全成熟，快點收成吧！";
+                document.getElementById("harvestBtn").style.display = "block";
+            }
+        } else if (water === 0 && plantStageIndex < 2) {
+            document.getElementById("status").innerText = "⚠️ 植物快乾枯了！請立刻澆水否則會停止生長！";
+        }
+    }, 1000);
+}
+
+updateUI();
+</script>
+</body></html>
